@@ -1,6 +1,6 @@
 # **ADDU-NSM** <img src="imgs/addunsm.jpg" alt="drawing" width="20"/>
 
-# **FEAN**
+# **F-E-A-N Framework**
 ## **Firestore**
 <img src="imgs/firestore.png" alt="drawing" width="70"/>
 
@@ -14,7 +14,10 @@
 <img src="imgs/node.png" alt="drawing" width="70"/>
 
 # **Skills Inventory System**
-Purpose and some details of the system
+A **Skills Inventory System's** purpose is for a company's Human Resources (HR) Team to properly organize and keep track of its employees' skills. This system can be used by the company to assess whether the current employee lineup fits company goals. It also plays a significant part in the future planning and shaping of the company's workforce and personnel. A **Skills Inventory System** opens up the possibility of proper budgeting for staff training and other skill-related development courses within the company, making this a hugely beneficial asset to any organization.
 
-Enumerate the list of the possible sub-system
-
+### Possible sub-systems that can be found within a Skills Inventory System
+- Employee Management System
+- Operations Management System
+- Improvement Management System
+- Service Management System
