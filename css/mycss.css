@@ -1,0 +1,62 @@
+.tester {
+    border-style: solid;
+    border-width: 10px;
+    border-color: red;
+}
+
+#splash {
+    height: 100vh;
+}
+
+#splash-img {
+    background-image: url("../imgs/splash-bg3.jpg");
+}
+
+#splash-content {
+    height: 100vh;
+    width: 100vw;
+}
+
+#body {
+    background-color: rgb(68, 118, 226);
+}
+
+#border {
+    height: 20px;
+    border-radius: 0px 0px 5px 5px;
+    background-color: azure;
+}
+
+.fit-to-parent {
+    height: 100%;
+    width: 100%;
+}
+
+.img-cover {
+    background-size: cover;
+}
+
+.abs {
+    position: absolute;
+}
+
+.white-text {
+    color: white;
+}
+
+.op-0 {
+    opacity: 0;
+}
+
+.trans-slow {
+    transition: 1.5s;
+}
+
+.blur {
+    filter: blur(3px);
+}
+
+.fit-to-view {
+    height: 100vh;
+    width: 100vw;
+}
