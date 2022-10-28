@@ -6,8 +6,10 @@
     "start": "node ./bin/www",
     "stop": "pkill --signal SIGINT myApp"
   },
+  "engines": {
+    "npm": "~12.22.9"
+  },
   "dependencies": {
-    "npm": "~12.22.9",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "^3.1.8",
