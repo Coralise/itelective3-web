@@ -7,7 +7,7 @@
     "stop": "pkill --signal SIGINT myApp"
   },
   "engines": {
-    "npm": "~12.22.9"
+    "npm": "12.22.9"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
