@@ -1,0 +1,17 @@
+
+                                <% if (doc.get('imageUrls').length == 1) { %>
+                                    <% } else { %>
+                                        <div class="image-num">1/<%= doc.get('imageUrls').length %>  </div>
+                                        <div class="overdiv">
+                                            <div class="buttons">
+                                                <button class="ui left floated icon circular button" data-id=<%= id %>><i class="chevron left icon"></i></button>
+                                                <button class="ui right floated icon circular button" data-id=<%= id %>><i class="chevron right icon"></i></button>
+                                            </div>
+                                        </div>
+                                        <div class="images clickable modal" id="<%= id %>-images" data-image="1">
+                                            <img class="ui image" id="<%= id %>-image-1" src=<%= doc.get('imageUrls')[0] %> >
+                                            <% for (let i = 1; i < doc.get('imageUrls').length; i++ ) { %>
+                                                <img class="ui image hidden" id="<%= id %>-image-<%= i+1 %>" src=<%= doc.get('imageUrls')[i] %> >
+                                            <% } %>
+                                        </div>
+                                    <% } %> 

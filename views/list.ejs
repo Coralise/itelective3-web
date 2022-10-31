@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String Haven</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="stylesheets/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.0/dist/semantic.min.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="ui secondary pointing menu">
+        <a class="item" href="/">
+          Home
+        </a>
+        <a class="active item">
+          List
+        </a>
+        <a class="item">
+          Friends
+        </a>
+        <div class="right menu">
+          <a class="ui item">
+            Logout
+          </a>
+        </div>
+    </div>  
+    <div class="ui container" style="height:2000px;">
+
+        <h2 class="ui center aligned icon header">
+            <i class="circular guitar icon"></i>
+            List of Posts
+        </h2>
+
+        <table class="ui celled table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Poster</th>
+                    <th>Date Posted</th>
+                    <th>Description</th>
+                    <th>Reactions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% posts.forEach(doc => { %>
+                    
+                    <tr>
+                        <td data-label="Image"><img src=<%= doc.get('imageUrls')[0] %> class="ui image small" /></td>
+                        <td data-label="Poster"><%= doc.get('poster') %></td>
+                        <td data-label="Date Posted">
+                            <% const unixTimestamp = doc.get('datePosted') %> 
+
+                            <% const milliseconds = 1575909015 * 1000 %> 
+
+                            <% const dateObject = new Date(milliseconds) %> 
+
+                            <%= dateObject.toLocaleString() %> 
+                        </td>
+                        <td data-label="Description"><%= doc.get('desc') %></td>
+                        <td data-label="Reactions">
+                            <% var output = "" %> 
+                            <% if (doc.get('reactions').like > 0) output += "<span class='ui text blue'>" + doc.get('reactions').like + " Likes</span>, " %>
+                            <% if (doc.get('reactions').love > 0) output += "<span class='ui text pink'>" + doc.get('reactions').love + " Loves</span>, " %>
+                            <% if (doc.get('reactions').laugh > 0) output += "<span class='ui text orange'>" + doc.get('reactions').laugh + " Laughs</span>, " %>
+                            <% if (doc.get('reactions').sad > 0) output += "<span class='ui text teal'>" + doc.get('reactions').sad + " Sads</span>, " %>
+                            <% if (doc.get('reactions').angry > 0) output += "<span class='ui text red'>" + doc.get('reactions').angry + " Angries</span>, " %>
+                            <% output = output.slice(0, -2) %> 
+                            <%- output %> 
+                        </td>
+                    </tr>
+
+                <% }) %>
+            </tbody>
+        </table>
+
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.0/dist/semantic.min.js"></script>
+</body>
+</html>

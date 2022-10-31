@@ -7,12 +7,14 @@
 var app = require('../app');
 var debug = require('debug')('itelective3-web:server');
 var http = require('http');
+var fm = require('./firebase-manager');
+const { Server } = require("socket.io");
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '4000');
+var port = normalizePort(process.env.PORT || '5000');
 app.set('port', port);
 
 /**
@@ -20,6 +22,96 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+const io = new Server(server);
+io.on('connection', (socket) => {
+  
+  socket.on('addReaction', (id, reaction) => {
+    fm.addReaction(id, reaction).then(res => fm.getReactions(id).then(function(doc) {
+            
+      if (doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry >= 10) {
+        socket.emit('updateReactionsResult', id, doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry + " Reactions"); 
+      } else {
+          var output = "";
+          if (doc.get('reactions').like > 0) output += doc.get('reactions').like + " Likes, ";
+          if (doc.get('reactions').love > 0) output += doc.get('reactions').love + " Loves, ";
+          if (doc.get('reactions').laugh > 0) output += doc.get('reactions').laugh + " Laughs, ";
+          if (doc.get('reactions').sad > 0) output += doc.get('reactions').sad + " Sads, ";
+          if (doc.get('reactions').angry > 0) output += doc.get('reactions').angry + " Angries, ";
+          output = output.slice(0, -2);
+          socket.emit('updateReactionsResult', id, output);
+      }
+    }));
+  });
+  
+  socket.on('removeReaction', (id, reaction) => {
+    fm.removeReaction(id, reaction).then(res => fm.getReactions(id).then(function(doc) {
+            
+      if (doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry >= 10) {
+        socket.emit('updateReactionsResult', id, doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry + " Reactions"); 
+      } else {
+          var output = "";
+          if (doc.get('reactions').like > 0) output += doc.get('reactions').like + " Likes, ";
+          if (doc.get('reactions').love > 0) output += doc.get('reactions').love + " Loves, ";
+          if (doc.get('reactions').laugh > 0) output += doc.get('reactions').laugh + " Laughs, ";
+          if (doc.get('reactions').sad > 0) output += doc.get('reactions').sad + " Sads, ";
+          if (doc.get('reactions').angry > 0) output += doc.get('reactions').angry + " Angries, ";
+          output = output.slice(0, -2);
+          socket.emit('updateReactionsResult', id, output);
+      }
+    }));
+  });
+  
+  socket.on('updateReaction', (id, oldReact, newReact) => {
+    fm.updateReaction(id, oldReact, newReact).then(res => fm.getReactions(id).then(function(doc) {
+            
+      if (doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry >= 10) {
+        socket.emit('updateReactionsResult', id, doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry + " Reactions"); 
+      } else {
+          var output = "";
+          if (doc.get('reactions').like > 0) output += doc.get('reactions').like + " Likes, ";
+          if (doc.get('reactions').love > 0) output += doc.get('reactions').love + " Loves, ";
+          if (doc.get('reactions').laugh > 0) output += doc.get('reactions').laugh + " Laughs, ";
+          if (doc.get('reactions').sad > 0) output += doc.get('reactions').sad + " Sads, ";
+          if (doc.get('reactions').angry > 0) output += doc.get('reactions').angry + " Angries, ";
+          output = output.slice(0, -2);
+          socket.emit('updateReactionsResult', id, output);
+      }
+    }));
+  });
+
+  socket.on('updateReactions', id => {
+    fm.getReactions(id).then(function(doc) {
+            
+      if (doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry >= 10) {
+        socket.emit('updateReactionsResult', id, doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry + " Reactions"); 
+      } else {
+          var output = "";
+          if (doc.get('reactions').like > 0) output += doc.get('reactions').like + " Likes, ";
+          if (doc.get('reactions').love > 0) output += doc.get('reactions').love + " Loves, ";
+          if (doc.get('reactions').laugh > 0) output += doc.get('reactions').laugh + " Laughs, ";
+          if (doc.get('reactions').sad > 0) output += doc.get('reactions').sad + " Sads, ";
+          if (doc.get('reactions').angry > 0) output += doc.get('reactions').angry + " Angries, ";
+          output = output.slice(0, -2);
+          socket.emit('updateReactionsResult', id, output);
+      }
+    });
+  });
+
+  socket.on('getDocument', id => {
+    fm.getDocument(id).then((doc) => {
+        if (doc.exists) {
+          socket.emit('getDocumentResult', id, doc.data());
+        } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+        }
+    }).catch((error) => {
+        console.log("Error getting document:", error);
+    });
+  });
+
+});
 
 /**
  * Listen on provided port, on all network interfaces.

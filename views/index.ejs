@@ -17,8 +17,8 @@
         <a class="active item">
           Home
         </a>
-        <a class="item">
-          Messages
+        <a class="item" href="/list">
+          List
         </a>
         <a class="item">
           Friends
@@ -61,34 +61,26 @@
                 </div>
 
                 <% posts.forEach(doc => { %>
-                    <% var id = doc.get('id') %> 
+                    <% var id = doc.id %> 
         
-                    <div class="ui basic padded segment post">
+                    <div class="ui basic padded segment post" data-id=<%= id %> >
                         <div class="ui raised fluid card">
-                            <div class="content bold">
-                              <div class="right floated meta">14h</div>
+                            <div class="content bold"> 
+                              <div class="right floated meta">
+                                <% const unixTimestamp = doc.get('datePosted') %> 
+
+                                <% const milliseconds = 1575909015 * 1000 // 1575909015000 %> 
+
+                                <% const dateObject = new Date(milliseconds) %> 
+
+                                <%= dateObject.toLocaleString() %> 
+                              </div>
                               <%- doc.get('poster') %> 
                             </div>
                             <div class="image">
-                                <% if (doc.get('imageUrls').length == 1) { %>
-                                    <img class="clickable modal" src=<%= doc.get('imageUrls')[0] %> >
-                                <% } else { %>
-                                    <div class="image-num">1/<%= doc.get('imageUrls').length %>  </div>
-                                    <div class="overdiv">
-                                        <div class="buttons">
-                                            <button class="ui left floated icon circular button" data-id=<%= id %>><i class="chevron left icon"></i></button>
-                                            <button class="ui right floated icon circular button" data-id=<%= id %>><i class="chevron right icon"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="images clickable modal" id="<%= id %>-images" data-image="1">
-                                        <img class="ui image" id="<%= id %>-image-1" src=<%= doc.get('imageUrls')[0] %> >
-                                        <% for (let i = 1; i < doc.get('imageUrls').length; i++ ) { %>
-                                            <img class="ui image hidden" id="<%= id %>-image-<%= i+1 %>" src=<%= doc.get('imageUrls')[i] %> >
-                                        <% } %>
-                                    </div>
-                                <% } %> 
+                                    <img class="clickable modal" src=<%= doc.get('imageUrls')[0] %> data-id=<%= id %> >
                             </div>
-                            <div class="extra content clickable modal">
+                            <div class="extra content clickable modal" data-id=<%= id %>>
                                 <div class="description">
                                   <p><%- doc.get('desc') %></p>
                                 </div>
@@ -103,18 +95,20 @@
                                         <div class="ui compact teal react icon button circular huge" data-choice="Sad" data-id=<%= id %> data-color="teal"><i class="sad tear outline icon"></i></em></div>
                                         <div class="ui compact red react icon button circular huge" data-choice="Angry" data-id=<%= id %> data-color="red"><i class="angry outline icon"></i></em></div>
                                     </div>
-                                    <% if (doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry >= 10) { %>
-                                        <%= doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry %> Reactions
-                                    <% } else { %>
-                                        <% var output = "" %> 
-                                        <% if (doc.get('reactions').like > 0) output += doc.get('reactions').like + " Likes, " %>
-                                        <% if (doc.get('reactions').love > 0) output += doc.get('reactions').love + " Loves, " %>
-                                        <% if (doc.get('reactions').laugh > 0) output += doc.get('reactions').laugh + " Laughs, " %>
-                                        <% if (doc.get('reactions').sad > 0) output += doc.get('reactions').sad + " Sads, " %>
-                                        <% if (doc.get('reactions').angry > 0) output += doc.get('reactions').angry + " Angries, " %>
-                                        <% output = output.slice(0, -2) %> 
-                                        <%= output %> 
-                                    <% } %>
+                                    <span id="<%= id %>-reaction-span">
+                                        <% if (doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry >= 10) { %>
+                                            <%= doc.get('reactions').like + doc.get('reactions').love + doc.get('reactions').laugh + doc.get('reactions').sad + doc.get('reactions').angry %> Reactions
+                                        <% } else { %>
+                                            <% var output = "" %> 
+                                            <% if (doc.get('reactions').like > 0) output += doc.get('reactions').like + " Likes, " %>
+                                            <% if (doc.get('reactions').love > 0) output += doc.get('reactions').love + " Loves, " %>
+                                            <% if (doc.get('reactions').laugh > 0) output += doc.get('reactions').laugh + " Laughs, " %>
+                                            <% if (doc.get('reactions').sad > 0) output += doc.get('reactions').sad + " Sads, " %>
+                                            <% if (doc.get('reactions').angry > 0) output += doc.get('reactions').angry + " Angries, " %>
+                                            <% output = output.slice(0, -2) %> 
+                                            <%= output %> 
+                                        <% } %>
+                                    </span>
                                      
                                 </span>
                                 <!-- <span class="right floated">
@@ -136,67 +130,63 @@
             <div class="ui grid basic segment">
                     <div class="ui eight wide column">
                         <div class="image content">
-                            <img src="images/Martin LX1RE Electro Acoustic Guitar.jpg" alt="">
+                            <img id="modal-image" class="ui fluid rounded image" src="images/Martin LX1RE Electro Acoustic Guitar.jpg" alt="">
                         </div>
                     </div>
                     <div class="ui eight wide column">
                         <div class="ui basic segments">
                             <div class="ui segment">
                                 <h3 class="ui header">
-                                    <div class="content">
+                                    <div class="content" id="modal-name">
                                         Name
-                                        <div class="sub header">
-                                            Hours Ago
-                                        </div>
+                                    </div>
+                                    <div class="sub header" id="modal-time">
+                                        Hours Ago
                                     </div>
                                 </h3>
-                                <p>Description</p>
+                                <p id="modal-desc">Description</p>
                             </div>
                             <div class="ui segment reacts">
                                 <span class="left floated">
-                                    <div class="ui reaction icon button" data-choice="none" id="31-modal-reaction" data-color="none">React</div>
+                                    <div class="ui reaction icon button" data-choice="none" id="modal-reaction" data-color="none">React</div>
                                     <div class="ui flowing popup top left transition hidden">
-                                        <div class="ui compact blue react icon button circular huge" data-choice="Like" data-id=31 data-color="blue"><i class="thumbs up outline icon"></i></div>
-                                        <div class="ui compact pink react icon button circular huge" data-choice="Love" data-id=31 data-color="pink"><i class="heart outline icon"></i></div>
-                                        <div class="ui compact orange react icon button circular huge" data-choice="Laugh" data-id=31 data-color="orange"><i class="laugh squint outline icon"></i></em></div>
-                                        <div class="ui compact teal react icon button circular huge" data-choice="Sad" data-id=31 data-color="teal"><i class="sad tear outline icon"></i></em></div>
-                                        <div class="ui compact red react icon button circular huge" data-choice="Angry" data-id=31 data-color="red"><i class="angry outline icon"></i></em></div>
+                                        <div id="modal-like" class="ui compact blue react icon button circular huge" data-choice="Like" data-color="blue"><i class="thumbs up outline icon"></i></div>
+                                        <div id="modal-love" class="ui compact pink react icon button circular huge" data-choice="Love" data-color="pink"><i class="heart outline icon"></i></div>
+                                        <div id="modal-laugh" class="ui compact orange react icon button circular huge" data-choice="Laugh" data-color="orange"><i class="laugh squint outline icon"></i></em></div>
+                                        <div id="modal-sad" class="ui compact teal react icon button circular huge" data-choice="Sad" data-color="teal"><i class="sad tear outline icon"></i></em></div>
+                                        <div id="modal-angry" class="ui compact red react icon button circular huge" data-choice="Angry" data-color="red"><i class="angry outline icon"></i></em></div>
                                     </div>
-                                    <% if (1 >= 10) { %>
-                                        1 Reactions
-                                    <% } else { %>
-                                        <% var output = "" %> 
-                                        <% if (2 > 0) output += 2 + " Likes, " %>
-                                        <% if (3 > 0) output += 3 + " Loves, " %>
-                                        <% if (4 > 0) output += 4 + " Laughs, " %>
-                                        <% if (5 > 0) output += 5 + " Sads, " %>
-                                        <% if (6 > 0) output += 6 + " Angries, " %>
-                                        <% output = output.slice(0, -2) %> 
-                                        <%= output %> 
-                                    <% } %>
+                                    <span id="modal-reactions">
+
+                                    </span>
                                 </span>
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
           </div>
 
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.0/dist/semantic.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        var socket = io();
         $('.sidebar-button').click(() => $('.ui.labeled.icon.sidebar').sidebar('toggle'));
         $('.ui.sticky.profile').sticky({ context: '#feed'});
         $('.reaction.button').popup({ hoverable: true });
-        $('.post .card .clickable.modal').click(() => {
-
+        $('#modal-reaction').popup({ hoverable: true });
+        $('.post .card .clickable.modal').click(function() {
+            $('.ui.modal').data('id', $(this).data('id'));
             $('.ui.modal').modal('show');
+            var id = $('.ui.modal').data('id');
+            socket.emit('getDocument', id);
         });
         $('.react.button').click(function() {
             const reactionBtn = $('#' + $(this).data('id') + "-reaction");
             if (reactionBtn.data('choice') == $(this).data('choice')) {
-                // TODO remove reaction
+                removeReaction($(this).data('id'), $(this).data('choice'));
                 reactionBtn.data('choice', 'none');
                 reactionBtn.removeClass(reactionBtn.data('color'));
                 reactionBtn.data('color', 'none');
@@ -208,14 +198,13 @@
                 });
             } else {
                 if (reactionBtn.data('choice') == 'none') {
-                    // TODO add reaction
                     addReaction($(this).data('id'), $(this).data('choice'));
                     reactionBtn.data('choice', $(this).data('choice'));
                     reactionBtn.addClass($(this).data('color'));
-                    reactionBtn.data('color', $(this).data('color'));
+                    reactionBtn.data('color', $(this).data('color'));   
                     reactionBtn.html($(this).html());
                 } else {
-                    // TODO update reaction
+                    updateReaction($(this).data('id'), $(reactionBtn).data('choice'), $(this).data('choice'));
                     reactionBtn.data('choice', $(this).data('choice'));
                     reactionBtn.removeClass(reactionBtn.data('color'));
                     reactionBtn.addClass($(this).data('color'));
@@ -223,6 +212,7 @@
                     reactionBtn.html($(this).html());
                 }
                 // TODO update react list
+                // socket.emit('updateReactions', $(this).data('id'));
                 $.toast({
                     title: $(this).data('choice'),
                     message: 'Successfully reacted!',
@@ -246,6 +236,83 @@
             $('#' + id + '-image-' + $('#' + id + '-images').data('image')).addClass('hidden');
             $('#' + id + '-image-' + imgNum).removeClass('hidden');
             $('#' + id + '-images').data('image', imgNum);
+        }
+
+        function addReaction(id, reaction) {
+            socket.emit("addReaction", id, reaction);
+        }
+
+        function removeReaction(id, reaction) {
+            socket.emit("removeReaction", id, reaction);
+        }
+
+        function updateReaction(id, oldReact, newReact) {
+            socket.emit("updateReaction", id, oldReact, newReact)
+        }
+
+        socket.on('updateReactionsResult', (id, res) => {
+            $('#'+ id + '-reaction-span').html(res);
+            $('#modal-reactions').html(res);
+        });
+
+        reactions = {
+            'like': ['blue', '<i class="thumbs up outline icon"></i>'],
+            'love': ['pink', '<i class="heart outline icon"></i>'],
+            'laugh': ['orange', '<i class="laugh squint outline icon"></i>'],
+            'sad': ['teal', '<i class="sad tear outline icon"></i>'],
+            'angry': ['red', '<i class="angry outline icon"></i>']
+        };
+
+        socket.on('getDocumentResult', (id, doc) => {
+            $('#modal-image').attr('src', doc['imageUrls'][0]);
+            $('#modal-name').html(doc['poster']);
+            $('#modal-time').html(getDate(doc['datePosted']));
+            $('#modal-desc').html(doc['desc']);
+            var output = "" 
+            if (doc['reactions']['like'] > 0) output += doc['reactions']['like'] + " Likes, "
+            if (doc['reactions']['love'] > 0) output += doc['reactions']['love'] + " Loves, "
+            if (doc['reactions']['laugh'] > 0) output += doc['reactions']['laugh'] + " Laughs, "
+            if (doc['reactions']['sad'] > 0) output += doc['reactions']['sad'] + " Sads, "
+            if (doc['reactions']['angry'] > 0) output += doc['reactions']['angry'] + " Angries, "
+            output = output.slice(0, -2)
+            $('#modal-reactions').html(output);
+
+            var reactionBtn = $('#modal-reaction');
+            if ($('#' + id + '-reaction').data('choice') != 'none') {
+                var re = reactions[$('#' + id + '-reaction').data('choice').toLowerCase()];
+                if (reactionBtn.data('color') != 'undefined') {
+                    reactionBtn.removeClass(reactionBtn.data('color'));
+                }
+                reactionBtn.data('choice', $('#' + id + '-reaction').data('choice'));
+                reactionBtn.addClass(re[0]);
+                reactionBtn.data('color', re[0]);   
+                reactionBtn.html(re[1]);
+            } else {
+                reactionBtn.data('choice', 'none');
+                reactionBtn.removeClass(reactionBtn.data('color'));
+                reactionBtn.data('color', 'none');
+                reactionBtn.html('React');
+            }
+        });
+        // modal-image
+        // modal-name
+        // modal-time
+        // modal-desc
+        // modal-reaction
+        // modal-like
+        // modal-love
+        // modal-laugh
+        // modal-sad
+        // modal-angry
+
+        function getDate(unix) {
+            const unixTimestamp = unix
+
+            const milliseconds = 1575909015 * 1000 // 1575909015000
+
+            const dateObject = new Date(milliseconds)
+
+            return dateObject.toLocaleString();
         }
     </script>
 </body>
